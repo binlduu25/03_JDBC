@@ -21,19 +21,28 @@ public class StudentDAO {
 		
 		String gender = null;
 		
-		String sql = """
-					 SELECT GENDER
-					 FROM KH_STUDENT
-					 WHERE STD_NAME = ?
-					 """;
+		try {
 		
-		pstmt = conn.prepareStatement(sql);
-		pstmt.setString(1, inputName);
-		rs = pstmt.executeQuery();
-		
-		while(rs.next()) {
-			gender = rs.getString("GENDER");
+			String sql = """
+						 SELECT GENDER
+						 FROM KH_STUDENT
+						 WHERE STD_NAME = ?
+						 """;
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, inputName);
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				gender = rs.getString("GENDER");
+			}
+			
+		}finally {
+			
+			JDBCTemplateH.close(rs);
+			JDBCTemplateH.close(pstmt);
 		}
+		
 		return gender;
 	}
 	
