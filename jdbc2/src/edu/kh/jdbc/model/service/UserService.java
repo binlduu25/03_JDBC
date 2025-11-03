@@ -139,6 +139,35 @@ public class UserService {
 	}
 	
 	
+	public List<User> updateInputCheck(String userId, String userPw) throws Exception{ // 정보수정 회원 확인용
+		
+		Connection conn = JDBCTemplate.getConnection();
+		
+		List<User> updateInputCheck = dao.updateInputCheck(conn, userId, userPw);
+		
+		JDBCTemplate.close(conn);
+		
+		return updateInputCheck;
+		
+	}
+	
+	public int updateInfo(String inputName, String inputId, String inputPw) throws Exception { // 정보수정 회원 실행용
+
+		Connection conn = JDBCTemplate.getConnection();
+
+		int updateInfo = dao.updateInfo(conn, inputName, inputId, inputPw);
+
+		if (updateInfo > 0) {
+			JDBCTemplate.commit(conn);
+		} else {
+			JDBCTemplate.rollback(conn);
+		}
+
+		JDBCTemplate.close(conn);
+
+		return updateInfo;
+
+	}
 	
 
 }

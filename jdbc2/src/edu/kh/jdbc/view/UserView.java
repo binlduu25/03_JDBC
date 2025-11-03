@@ -66,9 +66,9 @@ public class UserView {
 					case 3: selectName(); break;
 					case 4: selectUser(); break;
 					case 5: deleteUser(); break;
-					/*case 6: updateName(); break;
-					case 7: insertUser2(); break;
-					case 8: multiInsertUser(); break;*/
+					case 6: updateName(); break;
+					/*case 7: insertUser2(); break;   -> check 부분만 따로 만들어서 insert 는 1번 사용하면 됨 */
+					/*case 8: multiInsertUser(); break;	-> 한번 해보기											*/
 					case 0: System.out.println("\n[프로그램 종료]\n"); break;
 					default: System.out.println("\n[메뉴 번호만 입력하세요]\n");
 				}
@@ -132,9 +132,7 @@ public class UserView {
 			System.out.println("\n사용자 등록 실패!\n");
 			
 		}
-		
-		JDBCTemplate.getConnection();
-
+	
 	}
 	
 	/**
@@ -174,7 +172,7 @@ public class UserView {
 	}
 	
 	// 10.C. 여기서부터 강의 안 보고 자체 작성
-	private void selectName() throws Exception{
+	private void selectName() throws Exception{ // 10.C.1. 이름으로 검색
 		
 		System.out.println("\n====3. 검색된 User 조회(이름 포함) ====\n");
 		System.out.print("검색할 키워드 입력(이름) : ");
@@ -191,7 +189,7 @@ public class UserView {
 		}
 	}
 	
-	private void selectUser() throws Exception {
+	private void selectUser() throws Exception { // 10.D.1. 회원번호로 검색
 		
 		System.out.println("\n====4. 검색된 User 조회(USER_NO 검색) ====\n");
 		System.out.print("검색할 번호 입력 : ");
@@ -209,9 +207,9 @@ public class UserView {
 		
 	}
 	
-	private void deleteUser() throws Exception {
+	private void deleteUser() throws Exception {  // 10.E.1. 회원 삭제
 		
-		System.out.println("\n====4. 검색된 User 조회(USER_NO 검색) ====\n");
+		System.out.println("\n====5. USER_NO를 입력 받아 일치하는 User 삭제(DELETE) ====\n"); 
 		System.out.print("삭제할 번호 입력 : ");
 		int no = sc.nextInt();
 		
@@ -236,4 +234,45 @@ public class UserView {
 		}
 		
 	}
-}
+	
+	public void updateName() throws Exception{ // 10.F.1. 회원 정보 수정
+		
+		System.out.println("\n==== 6. ID, PW가 일치하는 회원이 있을 경우 이름 수정(UPDATE) ====\n");
+		
+		System.out.print("ID 입력 : ");
+		String inputId = sc.next();
+		
+		System.out.print("PW 입력 : ");
+		String inputPw = sc.next();
+		
+		List<User> updateInputCheck = service.updateInputCheck(inputId, inputPw);
+		
+		if (updateInputCheck.isEmpty()) {
+			System.out.println("ID/PW 가 조회되지 않습니다.");
+			return;
+		} else {
+			for (User checkResult : updateInputCheck) {
+				System.out.println("===== 조회된 회원 =====");
+				System.out.println(checkResult);
+			}
+		}
+		
+		System.out.print("수정하고자 하는 이름 입력 : ");
+		String inputName = sc.next();
+		
+		int updateInfo = service.updateInfo(inputName, inputId, inputPw);
+		
+		if (updateInfo > 0) {
+			System.out.println("수정 성공!");
+		}else{
+			System.out.println("수정 실패!");
+		}
+		
+	}
+	
+	
+	
+	
+	
+	}
+

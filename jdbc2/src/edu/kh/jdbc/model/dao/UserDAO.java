@@ -3,12 +3,14 @@ package edu.kh.jdbc.model.dao;
 import static edu.kh.jdbc.common.JDBCTemplate.close;
 
 import java.sql.Connection;
+import java.sql.JDBCType;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.kh.jdbc.common.JDBCTemplate;
 // 10.A.6.7.1. 
  // -> JDBCTemplate 을 매번 불러와야 하는 수고로움을 덜기 위해 위와 같이 import 구문 수정
  // import (+static) edu.kh.jdbc.common.JDBCTemplate(+.*);
@@ -269,5 +271,80 @@ public class UserDAO {
 
 		return delResult;
 
+	}
+	
+	public List<User> updateInputCheck (Connection conn, String userId, String userPw) throws Exception{ // 수정할 회원 확인
+		
+		List<User> updateInputCheck = new ArrayList<User>();
+		
+		try {
+			
+			conn = JDBCTemplate.getConnection();
+			
+			String sql = """
+					SELECT USER_NO, USER_ID, USER_PW, USER_NAME, TO_CHAR(ENROLL_DATE, 'YYYY"년" MM"월" DD"일"') AS "ENROLL_DATE"
+					FROM TB_USER
+					WHERE USER_ID = ?
+					AND USER_PW = ?
+					""";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, userId);
+			pstmt.setString(2, userPw);
+			
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				
+				int no = rs.getInt("USER_NO");
+				String id = rs.getString("USER_ID");
+				String pw = rs.getString("USER_PW");
+				String name = rs.getString("USER_NAME");
+				String date = rs.getString("ENROLL_DATE");
+				
+				updateInputCheck.add(new User(no, id, pw, name, date));
+			}
+			
+		} finally {
+			
+			close(rs);
+			close(pstmt);
+			
+		}
+		
+		return updateInputCheck;
+		
+	}
+	
+	public int updateInfo(Connection conn, String inputName, String inputId, String inputPw) throws Exception{ // 정보수정
+		
+		int updateInfo = -1;
+		
+		try {
+			
+			String sql = """
+					UPDATE TB_USER 
+					SET USER_NAME = ?
+					WHERE USER_ID = ?
+					AND USER_PW = ?
+					""";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, inputName);
+			pstmt.setString(2, inputId);
+			pstmt.setString(3, inputPw);
+			
+			updateInfo = pstmt.executeUpdate();
+			
+		} finally {
+			
+			close(pstmt);
+			
+		}
+		
+		return updateInfo;
+		
 	}
 }
