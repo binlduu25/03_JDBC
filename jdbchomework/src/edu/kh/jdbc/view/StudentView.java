@@ -76,7 +76,10 @@ public class StudentView {
 		System.out.println("\n더 추가하시겠습니까?(y/n)");
 		String yn = sc.next().toUpperCase();
 			
-		if(yn.equals("N")) System.out.println("메인 메뉴로 돌아갑니다.\n"); break;
+		if(yn.equals("N")) {System.out.println("메인 메뉴로 돌아갑니다.\n"); break;} 
+		else {
+			continue;
+		}
 		}
 	}
 	
@@ -93,7 +96,7 @@ public class StudentView {
 		
 	}
 	
-	public void matching() throws Exception{
+	public void matching() throws Exception{ // 이름 목록 내에 있는지 조회하는 기능 추가 필요
 		
 		System.out.println("\n학생의 이름을 입력하여 마음에 둔 사람을 찾아보세요.");
 		String inputName = sc.next();
